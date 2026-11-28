@@ -52,6 +52,10 @@ beforeEach(function () {
     ]);
 
     $this->user = User::factory()->create(['n_code' => $this->person->n_code]);
+    // #1830/#1972: the worker re-check resolves scope from `user_units` only;
+    // the person's HR `u_id` is not an access grant. Give the actor real
+    // membership so the queued import passes the session-free re-validation.
+    $this->user->units()->attach($this->unit->id, ['role' => 'staff', 'is_primary' => true]);
     $this->user->givePermissionTo('manage_hardware');
     $this->user->givePermissionTo('kargozini');
     // ایشو #814: import پرسنل داخل کامپوننت هم `manage_personnel` می‌خواهد.
